@@ -272,8 +272,9 @@ def get_table_download_link():
 
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-    href = f'<a href="data:file/csv;base64,{b64}">Download csv file</a>'
-    # st.markdown(href, unsafe_allow_html=True)
+    href = f'<a href="data:file/csv;base64,{b64}" download="C:\data_template.csv">Download csv file</a>'
+    # return href
+    return st.markdown(href, unsafe_allow_html=True)
 
 
 def write_title_h2(title):
@@ -391,9 +392,61 @@ def main():
         with step_1:
             st.markdown('''<label class="css-145kmo2 effi0qh0">Template File</label>''',
                         unsafe_allow_html=True)
-            download = st.button('Download', key='Download_Button_new')
+
+            placeholder = st.empty()
+            download = placeholder.button('Download', key='Download_Button_new')
             if download:
-                get_table_download_link()
+                # get_table_download_link()
+
+                dd = [
+                    {'Medias': 'media_1',
+                     'CPM': 0.01255,
+                     'CPC': 997.07,
+                     'CPA': 56.16,
+                     'MinInvestment': 600.0,
+                     'MaxInvestment': 2000.00},
+                    {'Medias': 'media_2',
+                     'CPM': 0.02094,
+                     'CPC': 1.2086299999999999,
+                     'CPA': 78.17,
+                     'MinInvestment': 900.0,
+                     'MaxInvestment': 3000.00},
+                    {'Medias': 'media_3',
+                     'CPM': 0.01744,
+                     'CPC': 5.59515,
+                     'CPA': 85.68,
+                     'MinInvestment': 450.0,
+                     'MaxInvestment': 1500.00},
+                    {'Medias': 'media_4',
+                     'CPM': 0.02437,
+                     'CPC': 1.54027,
+                     'CPA': 97.17,
+                     'MinInvestment': 600.0,
+                     'MaxInvestment': 2000.00},
+                    {'Medias': 'media_5',
+                     'CPM': 0.01961,
+                     'CPC': 5.19696,
+                     'CPA': 87.97,
+                     'MinInvestment': 900.0,
+                     'MaxInvestment': 3000.00}]
+
+                df = pd.DataFrame(dd)
+                df.to_csv('data_template.csv', index=False)
+
+                csv = df.to_csv(index=False)
+                b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+                # href = f'<a href="data:file/csv;base64,{b64}" download="data_template.csv">Download csv file</a>'
+                href = f'''<div class="row-widget stButton">
+                <button kind="primary" class="css-2trqyj edgvbvh1">
+                <a href="data:file/csv;base64,{b64}" download="data_template.csv">Download</a>
+                </button>
+                </div>'''
+                # return href
+                st.markdown(href, unsafe_allow_html=True)
+                placeholder.empty()
+
+
+                # st.markdown(get_table_download_link(), unsafe_allow_html=True)
 
     with input_2_col:
         step_2 = st.beta_expander("Step 2", expanded=True)
