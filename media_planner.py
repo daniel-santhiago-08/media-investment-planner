@@ -411,6 +411,7 @@ def main():
         with step_2:
             data = st.file_uploader('Upload media file', type=['xlsx', 'csv'], key='data')
             warnings = False
+            warning_low_greater_than_upper = False
             if data is not None:
                 df, default_bounds = load_data(data)
 
