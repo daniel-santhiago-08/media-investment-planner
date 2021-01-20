@@ -1,5 +1,7 @@
-streamlit==0.71.0
-numpy==1.19.3
-pandas==1.1.4
-matplotlib==3.3.3
-PuLP==2.4
+streamlit
+streamlit-theme
+numpy
+pandas
+matplotlib
+plotly
+PuLP

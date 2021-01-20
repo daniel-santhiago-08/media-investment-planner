@@ -229,51 +229,58 @@ def print_st_dataframe(df, index_col, cols, currency_cols, percent_cols, df_obje
     return df_object
 
 
-def get_table_download_link():
+def get_table_download_link(placeholder):
     """Generates a link allowing the data in a given panda dataframe to be downloaded
     in:  dataframe
     out: href string
     """
 
     dd = [
-            {'Medias': 'media_1',
-            'CPM': 0.01255,
-            'CPC': 997.07,
-            'CPA': 56.16,
-            'MinInvestment': 600.0,
-            'MaxInvestment': 2000.00},
-            {'Medias': 'media_2',
-            'CPM': 0.02094,
-            'CPC': 1.2086299999999999,
-            'CPA': 78.17,
-            'MinInvestment': 900.0,
-            'MaxInvestment': 3000.00},
-            {'Medias': 'media_3',
-            'CPM': 0.01744,
-            'CPC': 5.59515,
-            'CPA': 85.68,
-            'MinInvestment': 450.0,
-            'MaxInvestment': 1500.00},
-            {'Medias': 'media_4',
-            'CPM': 0.02437,
-            'CPC': 1.54027,
-            'CPA': 97.17,
-            'MinInvestment': 600.0,
-            'MaxInvestment': 2000.00},
-            {'Medias': 'media_5',
-            'CPM': 0.01961,
-            'CPC': 5.19696,
-            'CPA': 87.97,
-            'MinInvestment': 900.0,
-            'MaxInvestment': 3000.00}]
+        {'Medias': 'media_1',
+         'CPM': 0.01255,
+         'CPC': 997.07,
+         'CPA': 56.16,
+         'MinInvestment': 600.0,
+         'MaxInvestment': 2000.00},
+        {'Medias': 'media_2',
+         'CPM': 0.02094,
+         'CPC': 1.2086299999999999,
+         'CPA': 78.17,
+         'MinInvestment': 900.0,
+         'MaxInvestment': 3000.00},
+        {'Medias': 'media_3',
+         'CPM': 0.01744,
+         'CPC': 5.59515,
+         'CPA': 85.68,
+         'MinInvestment': 450.0,
+         'MaxInvestment': 1500.00},
+        {'Medias': 'media_4',
+         'CPM': 0.02437,
+         'CPC': 1.54027,
+         'CPA': 97.17,
+         'MinInvestment': 600.0,
+         'MaxInvestment': 2000.00},
+        {'Medias': 'media_5',
+         'CPM': 0.01961,
+         'CPC': 5.19696,
+         'CPA': 87.97,
+         'MinInvestment': 900.0,
+         'MaxInvestment': 3000.00}]
 
     df = pd.DataFrame(dd)
     df.to_csv('data_template.csv', index=False)
 
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-    href = f'<a href="data:file/csv;base64,{b64}">Download csv file</a>'
-    # st.markdown(href, unsafe_allow_html=True)
+    # href = f'<a href="data:file/csv;base64,{b64}" download="data_template.csv">Download csv file</a>'
+    href = f'''<div class="row-widget stButton">
+                    <button kind="primary" class="css-2trqyj edgvbvh1">
+                    <a href="data:file/csv;base64,{b64}" download="data_template.csv">Download</a>
+                    </button>
+                    </div>'''
+    # return href
+    st.markdown(href, unsafe_allow_html=True)
+    placeholder.empty()
 
 
 def write_title_h2(title):
@@ -391,16 +398,26 @@ def main():
         with step_1:
             st.markdown('''<label class="css-145kmo2 effi0qh0">Template File</label>''',
                         unsafe_allow_html=True)
-            download = st.button('Download', key='Download_Button_new')
-            if download:
-                get_table_download_link()
+
+            placeholder = st.empty()
+            get_table_download_link(placeholder)
+
+            # download = placeholder.button('Download', key='Download_Button_new')
+            # if download:
+            #     get_table_download_link(placeholder)
 
     with input_2_col:
         step_2 = st.beta_expander("Step 2", expanded=True)
         with step_2:
             data = st.file_uploader('Upload media file', type=['xlsx', 'csv'], key='data')
+            warnings = False
+            warning_low_greater_than_upper = False
+            # min_lower_number = 1000000
+
             if data is not None:
                 df, default_bounds = load_data(data)
+                min_lower_number = df['MinInvestment'].min()
+
 
             # if data is not None:
             #     df, default_bounds = load_data(data)
@@ -510,36 +527,18 @@ def main():
             with col_low:
                 with st.beta_expander('Min Investment',expanded=True):
 
+
+
                     for mchannel in media:
-                        # mchannel = st.sidebar.selectbox("Change media bounds", media)
 
-                        # low_number, upper_number = st.slider('{} Investiment range'.format(mchannel),
-                        #                                 min_value=0.0, max_value=2.0*MaxInvest[mchannel],
-                        #                                 value=[1.0*MinInvest[mchannel], 1.0*MaxInvest[mchannel]],
-                        #                                 key='slider_{}'.format(mchannel)
-                        #                                 )
-
-                        # low_number = st.sidebar.number_input('{} Min Investiment'.format(mchannel),
-                        #                                      min_value=0.0,
-                        #                                      max_value=2.0 * MaxInvest[mchannel],
-                        #                                      value=1.0 * MinInvest[mchannel],
-                        #                                      key='slider_min_{}'.format(mchannel))
-                        #
-                        # upper_number = st.sidebar.number_input('{} Max Investiment'.format(mchannel),
-                        #                                        min_value=0.0,
-                        #                                        max_value=2.0 * MaxInvest[mchannel],
-                        #                                        value=1.0 * MaxInvest[mchannel],
-                        #                                        key='slider_max_{}'.format(mchannel))
-
-
-
-
-
+                        index, = np.where(media == mchannel)
+                        min = float(df['MinInvestment'][index[0]])
+                        max = float(df['MaxInvestment'][index[0]])
 
                         low_number = st.number_input('{}'.format(mchannel),
                                                              min_value=0.0,
-                                                             max_value=2.0 * MaxInvest[mchannel],
-                                                             value=1.0 * MinInvest[mchannel],
+                                                             # max_value=2.0 * MaxInvest[mchannel],
+                                                             value=1.0 * min,
                                                              key='slider_min_{}'.format(mchannel))
 
                         # upper_number = st.number_input('{} Max Investiment'.format(mchannel),
@@ -548,6 +547,14 @@ def main():
                         #                                        value=1.0 * MaxInvest[mchannel],
                         #                                        key='slider_max_{}'.format(mchannel))
 
+
+                        if low_number >= max:
+                            warnings = True
+                            warning_low_greater_than_upper = True
+
+
+                        if low_number < min_lower_number:
+                            min_lower_number = low_number
 
                         index, = np.where(media == mchannel)
                         # df.at[index, 'MinInvestment'] =  low
@@ -567,11 +574,6 @@ def main():
             with col_upper:
                 with st.beta_expander('Max Investment',expanded=True):
                     for mchannel in media:
-                        # mchannel = st.sidebar.selectbox("Change media bounds", media)
-
-
-
-
 
                         index, = np.where(media == mchannel)
                         min = float(df['MinInvestment'][index[0]])
@@ -579,18 +581,16 @@ def main():
 
                         upper_number = st.number_input(label='',
                                                                min_value=0.0,
-                                                               max_value=2.0 * MaxInvest[mchannel],
+                                                               # max_value=2.0 * MaxInvest[mchannel],
                                                                value=1.0 * max,
                                                                key='slider_max_{}'.format(mchannel))
 
 
-
-
+                        if min >= upper_number:
+                            warnings = True
+                            warning_low_greater_than_upper = True
 
                         index, = np.where(media == mchannel)
-                        # df.at[index, 'MinInvestment'] =  low
-                        # df.at[index, 'MaxInvestment'] =  upper
-                        # df.at[index, 'MinInvestment'] = low_number
                         df.at[index, 'MaxInvestment'] = upper_number
 
 
@@ -634,19 +634,31 @@ def main():
 
 
 
-
-
-
-
-
-
         col1_margin,col2_btn,col3_margin = st.beta_columns([1,1,1])
         with col2_btn:
             optimize_button = st.button("Run Media Optimization",key='optimize_button')
 
 
 
-        if optimize_button:
+
+        if Budget <= 0:
+            warnings = True
+
+        if Budget < min_lower_number:
+            warnings = True
+
+
+        # if low_number >= upper_number:
+        #     warnings = True
+
+        if optimize_button and warnings == True:
+            if Budget <= 0:
+                st.warning("Input Budget must be greater than zero")
+            if Budget <= min_lower_number:
+                st.warning("Input Budget must be greater than at least one of the Min Investments")
+            if warning_low_greater_than_upper:
+                st.warning("Min Investment must be lower than Max Investment")
+        elif optimize_button and warnings == False:
             x, status = run_optimization(media, target, objective, Budget, spend_all, df)
 
 

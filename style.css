@@ -61,6 +61,23 @@
 }
 
 
+.stButton>button>a {
+    color: #6C7A96;
+    border-color: #6C7A96 !important;
+    text-decoration: none !important;
+}
+
+.stButton>button>a:hover {
+    background-color: #6C7A96;
+    border-color: #6C7A96 !important;
+    color: white !important;
+    box-shadow: none !important;
+    outline: none;
+    position:relative;
+
+}
+
+
 div[data-testid="stMarkdownContainer"]>h3 {
     color: #6C7A96 !important;
     font-weight: bold;
@@ -90,7 +107,7 @@ div[data-testid="stMarkdownContainer"]{
 
 div[data-testid="stHorizontalBlock"]>div:nth-child(1)>div:nth-child(1)>div>div>ul>li>div:nth-child(2) {
     padding-top: 14px !important;
-    padding-bottom: 6px !important;
+    padding-bottom: 2.5px !important;
 }
 
 
