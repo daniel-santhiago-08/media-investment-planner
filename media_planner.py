@@ -412,8 +412,11 @@ def main():
             data = st.file_uploader('Upload media file', type=['xlsx', 'csv'], key='data')
             warnings = False
             warning_low_greater_than_upper = False
+            # min_lower_number = 1000000
+
             if data is not None:
                 df, default_bounds = load_data(data)
+                min_lower_number = df['MinInvestment'].min()
 
 
             # if data is not None:
@@ -524,6 +527,8 @@ def main():
             with col_low:
                 with st.beta_expander('Min Investment',expanded=True):
 
+
+
                     for mchannel in media:
 
                         index, = np.where(media == mchannel)
@@ -532,7 +537,7 @@ def main():
 
                         low_number = st.number_input('{}'.format(mchannel),
                                                              min_value=0.0,
-                                                             max_value=2.0 * MaxInvest[mchannel],
+                                                             # max_value=2.0 * MaxInvest[mchannel],
                                                              value=1.0 * min,
                                                              key='slider_min_{}'.format(mchannel))
 
@@ -547,6 +552,9 @@ def main():
                             warnings = True
                             warning_low_greater_than_upper = True
 
+
+                        if low_number < min_lower_number:
+                            min_lower_number = low_number
 
                         index, = np.where(media == mchannel)
                         # df.at[index, 'MinInvestment'] =  low
@@ -573,7 +581,7 @@ def main():
 
                         upper_number = st.number_input(label='',
                                                                min_value=0.0,
-                                                               max_value=2.0 * MaxInvest[mchannel],
+                                                               # max_value=2.0 * MaxInvest[mchannel],
                                                                value=1.0 * max,
                                                                key='slider_max_{}'.format(mchannel))
 
@@ -636,12 +644,18 @@ def main():
         if Budget <= 0:
             warnings = True
 
+        if Budget < min_lower_number:
+            warnings = True
+
+
         # if low_number >= upper_number:
         #     warnings = True
 
         if optimize_button and warnings == True:
             if Budget <= 0:
                 st.warning("Input Budget must be greater than zero")
+            if Budget <= min_lower_number:
+                st.warning("Input Budget must be greater than at least one of the Min Investments")
             if warning_low_greater_than_upper:
                 st.warning("Min Investment must be lower than Max Investment")
         elif optimize_button and warnings == False:
