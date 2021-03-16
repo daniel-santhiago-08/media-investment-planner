@@ -1,1 +1,1 @@
-web: streamlit run --server.port $PORT media_planner.py
+web: streamlit run --server.port $PORT src/media_planner.py

@@ -1,7 +1,8 @@
-streamlit
-streamlit-theme
-numpy
-pandas
-matplotlib
-plotly
-PuLP
+matplotlib==3.1.2
+pandas==1.1.5
+numpy==1.18.1
+PuLP==1.6.8
+plotly==4.14.3
+streamlit==0.75.0
+xlrd
+openpyxl
