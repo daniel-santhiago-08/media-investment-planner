@@ -1,0 +1,24 @@
+alias daniel='cd /home/daniel/Área\ de\ Trabalho/Daniel'
+alias gitlab_mip='cd /home/daniel/Área\ de\ Trabalho/Daniel/GitLab/mip'
+alias heroku_mip='cd /home/daniel/Área\ de\ Trabalho/Daniel/Heroku/media-investment-planner-app'
+alias mip_deploy='rsync -a --delete "/home/daniel/Área de Trabalho/Daniel/GitLab/mip/src/" "/home/daniel/Área de Trabalho/Daniel/Heroku/media-investment-planner-app/src" && cd "/home/daniel/Área de Trabalho/Daniel/GitLab/mip" && rm -f .git/index.lock && git remote set-url origin http://daniel:DWhouse130_@gitlab.wmccann.cloud/wmc/tools/mip.git && git checkout dev-branch && git branch -u origin/dev-branch && git add . && git commit -m "heroku deploy preparation" && git push -f origin dev-branch && cd "/home/daniel/Área de Trabalho/Daniel/Heroku/media-investment-planner-app" && git branch -u heroku/master && git add . && git commit -m "app deploy" && git push -f heroku master'
+alias mip_deploy_gitlab='rsync -a --delete "/home/daniel/Área de Trabalho/Daniel/GitLab/mip/src/" "/home/daniel/Área de Trabalho/Daniel/Heroku/media-investment-planner-app/src" && cd "/home/daniel/Área de Trabalho/Daniel/GitLab/mip" && rm -f .git/index.lock && git remote set-url origin http://daniel:DWhouse130_@gitlab.wmccann.cloud/wmc/tools/mip.git && git checkout dev-branch && git branch -u origin/dev-branch && git add . && git commit -m "heroku deploy preparation" && git push -f origin dev-branch'
+alias mip_deploy_heroku='cd "/home/daniel/Área de Trabalho/Daniel/Heroku/media-investment-planner-app" & git branch -u heroku/master & git add . & git commit -m "app deploy" & git push heroku master & git status'
+alias mip_push_heroku='git push heroku master'
+run-mip() {
+rsync -a --delete "/home/daniel/Área de Trabalho/Daniel/GitLab/mip/src/" "/home/daniel/Área de Trabalho/Daniel/Heroku/media-investment-planner-app/src";
+cd "/home/daniel/Área de Trabalho/Daniel/GitLab/mip";
+rm -f .git/index.lock;
+git remote set-url origin http://daniel:DWhouse130_@gitlab.wmccann.cloud/wmc/tools/mip.git;
+git status;
+git checkout dev-branch;
+git branch -u origin/dev-branch;
+git add .;
+git commit -m "$1";
+git push -f origin dev-branch;
+cd "/home/daniel/Área de Trabalho/Daniel/Heroku/media-investment-planner-app";
+git branch -u heroku/master;
+git add .;
+git commit -m "$1";
+git push -f heroku master;
+};

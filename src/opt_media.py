@@ -70,5 +70,13 @@ def run_optimization(params):
         print(status)
 
         output[obj] = (x,status)
+        # import streamlit as st
+        # st.write(obj)
+        # st.write(output[obj][0])
+        # st.write(output[obj][0].keys())
+        # k = output[obj][0].keys()
+        # for ki in k:
+        #     st.write(output[obj][0][ki].value())
+
 
     return output

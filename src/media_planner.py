@@ -45,7 +45,7 @@ def load_data(mydata):
 
     return df, default_bounds
 
-def print_currency_dataframe(df, cols, currency_cols, percent_cols, object):
+def print_currency_dataframe(df, cols, currency_cols, percent_cols, metric_cols, object):
     formatted_df = df[cols]
 
     # currency_cols = ['CPM','CPC','CPA','MinInvestment','MaxInvestment']
@@ -54,6 +54,9 @@ def print_currency_dataframe(df, cols, currency_cols, percent_cols, object):
 
     for col_name in percent_cols:
         formatted_df = format_column_percent(df=formatted_df, col_name=col_name)
+
+    for col_name in metric_cols:
+        formatted_df = format_column_metrics(df=formatted_df, col_name=col_name)
 
     fig = go.Figure(data=[go.Table(
         header=dict(values=list(formatted_df.columns),
@@ -93,7 +96,7 @@ def print_currency_dataframe(df, cols, currency_cols, percent_cols, object):
 
     return element
 
-def print_st_dataframe(df, index_col, cols, currency_cols, percent_cols, df_object_source):
+def print_st_dataframe(df, index_col, cols, currency_cols, percent_cols, metric_cols, df_object_source):
     formatted_df = df[cols]
     # formatted_df.set_index('Medias', inplace=True)
     for col_name in currency_cols:
@@ -101,6 +104,9 @@ def print_st_dataframe(df, index_col, cols, currency_cols, percent_cols, df_obje
 
     for col_name in percent_cols:
         formatted_df = format_column_percent(df=formatted_df, col_name=col_name)
+
+    for col_name in metric_cols:
+        formatted_df = format_column_metrics(df=formatted_df, col_name=col_name)
 
     formatted_df.sort_values(by=[index_col], ascending=True, inplace=True)
     formatted_df.reset_index(inplace=True, drop=True)
@@ -149,6 +155,40 @@ def get_table_download_link(placeholder):
          'MinInvestment': 900.0,
          'MaxInvestment': 3000.00}]
 
+    dd = [
+        {'Medias': 'media_1',
+         'CPM': 0.01255,
+         'CPC': 997.07,
+         'CPV': 56.16,
+         'MinInvestment': 600.0,
+         'MaxInvestment': 2000.00},
+        {'Medias': 'media_2',
+         'CPM': 0.02094,
+         'CPC': 1.2086299999999999,
+         'CPV': 78.17,
+         'MinInvestment': 900.0,
+         'MaxInvestment': 3000.00},
+        {'Medias': 'media_3',
+         'CPM': 0.01744,
+         'CPC': 5.59515,
+         'CPV': 85.68,
+         'MinInvestment': 450.0,
+         'MaxInvestment': 1500.00},
+        {'Medias': 'media_4',
+         'CPM': 0.02437,
+         'CPC': 1.54027,
+         'CPV': 97.17,
+         'MinInvestment': 600.0,
+         'MaxInvestment': 2000.00},
+        {'Medias': 'media_5',
+         'CPM': 0.01961,
+         'CPC': 5.19696,
+         'CPV': 87.97,
+         'MinInvestment': 900.0,
+         'MaxInvestment': 3000.00}]
+
+
+
     df = pd.DataFrame(dd)
     df.to_csv('data_template.csv', index=False)
 
@@ -161,7 +201,7 @@ def get_table_download_link(placeholder):
                     </button>
                     </div>'''
     # return href
-    href = f'''<div class="row-widget stButton">
+    href = f'''<div class="row-widget stButtrun_optimizationon">
                         <a href="data:file/csv;base64,{b64}" download="data_template.csv">
                         <button kind="primary" class="css-2trqyj edgvbvh1">Download</button>
                         </a>    
@@ -182,6 +222,18 @@ def format_column_currency(df, col_name):
     df[col_name] = df[col_name].apply(lambda x: str("{:,}".format(int(x.split(',')[0]))) + '|' + x.split(',')[1])
     df[col_name] = df[col_name].apply(lambda x: x.replace(',', '.').replace('|', ','))
     df[col_name] = df[col_name].apply(lambda x: 'R$ ' + str(x))
+    return df
+
+def format_column_metrics(df, col_name):
+    # df[col_name] = df[col_name].apply(lambda x: 'R$ ' + str(x).replace('.', ','))
+    df[col_name] = df[col_name].apply(lambda x: str(x).replace('.', ','))
+
+    # df[col_name] = df[col_name].apply(lambda x: str("{:,}".format(int(x.split(',')[0]))) + '|' + x.split(',')[1])
+    df[col_name] = df[col_name].apply(lambda x: str("{:,}".format(int(x.split(',')[0]))) )
+    # df[col_name] = df[col_name].apply(lambda x: x.replace(',', '.').replace('|', ','))
+    df[col_name] = df[col_name].apply(lambda x: x.replace(',', '.'))
+
+
     return df
 
 def format_column_percent(df, col_name):
@@ -317,13 +369,22 @@ def add_media(params):
     elif existing_media_warning == 2:
         st.warning("Media needs to be filled!")
 
+    # planner = print_st_dataframe(
+    #         df=params['state'].df,
+    #         index_col='Medias',
+    #         cols=['Medias', 'CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+    #         currency_cols=['CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+    #         percent_cols=[],
+    #         df_object_source=params['planner_obj'])
+
     planner = print_st_dataframe(
-            df=params['state'].df,
-            index_col='Medias',
-            cols=['Medias', 'CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
-            currency_cols=['CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
-            percent_cols=[],
-            df_object_source=params['planner_obj'])
+        df=params['state'].df,
+        index_col='Medias',
+        cols=['Medias', 'CPM', 'CPC', 'CPV', 'MinInvestment', 'MaxInvestment'],
+        currency_cols=['CPM', 'CPC', 'CPV', 'MinInvestment', 'MaxInvestment'],
+        percent_cols=[],
+        metric_cols=[],
+        df_object_source=params['planner_obj'])
 
     params['planner_obj'] = planner
 
@@ -334,13 +395,22 @@ def edit_media(params):
 
 
 
+    # drop_columns = ['Optimal Investment', 'Share of Investment',
+    #                 'Expected Clicks',
+    #                 'Share of Clicks',
+    #                 'Expected Impressions',
+    #                 'Share of Impressions',
+    #                 'Expected Acquisition',
+    #                 'Share of Acquisition',
+    #                 ]
+
     drop_columns = ['Optimal Investment', 'Share of Investment',
                     'Expected Clicks',
                     'Share of Clicks',
                     'Expected Impressions',
                     'Share of Impressions',
-                    'Expected Acquisition',
-                    'Share of Acquisition',
+                    'Expected Views',
+                    'Share of Views',
                     ]
 
     temp_df = params['state'].df
@@ -487,12 +557,21 @@ def edit_media(params):
             params['state'].output = output
 
 
+    # planner = print_st_dataframe(
+    #     df=params['state'].df,
+    #     index_col='Medias',
+    #     cols=['Medias', 'CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+    #     currency_cols=['CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+    #     percent_cols=[],
+    #     df_object_source=params['planner_obj'])
+
     planner = print_st_dataframe(
         df=params['state'].df,
         index_col='Medias',
-        cols=['Medias', 'CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
-        currency_cols=['CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+        cols=['Medias', 'CPM', 'CPC', 'CPV', 'MinInvestment', 'MaxInvestment'],
+        currency_cols=['CPM', 'CPC', 'CPV', 'MinInvestment', 'MaxInvestment'],
         percent_cols=[],
+        metric_cols=[],
         df_object_source=params['planner_obj'])
 
     params['planner_obj'] = planner
@@ -569,12 +648,22 @@ def create_app_header():
 
         spend_all = True
 
+        # target = {
+        #     'Clicks': 'CPC',
+        #     'Impressions': 'CPM',
+        #     'Acquisition': 'CPA',
+        #     # 'Conversion':'Conversion rate',
+        # }
+
         target = {
             'Clicks': 'CPC',
             'Impressions': 'CPM',
-            'Acquisition': 'CPA',
+            'Views': 'CPV',
             # 'Conversion':'Conversion rate',
         }
+
+
+
 
         # Budget = 10000.00
         media = df.Medias.values
@@ -662,12 +751,21 @@ def display_planner_container(params):
 
             params['state'].df.sort_values(by=['Medias'], ascending=True, inplace=True)
             params['state'].df.reset_index(inplace=True, drop=True)
+            # planner = print_st_dataframe(
+            #     df=params['state'].df,
+            #     index_col='Medias',
+            #     cols=['Medias', 'CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+            #     currency_cols=['CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+            #     percent_cols=[],
+            #     df_object_source=params['planner_obj'])
+
             planner = print_st_dataframe(
                 df=params['state'].df,
                 index_col='Medias',
-                cols=['Medias', 'CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
-                currency_cols=['CPM', 'CPC', 'CPA', 'MinInvestment', 'MaxInvestment'],
+                cols=['Medias', 'CPM', 'CPC', 'CPV', 'MinInvestment', 'MaxInvestment'],
+                currency_cols=['CPM', 'CPC', 'CPV', 'MinInvestment', 'MaxInvestment'],
                 percent_cols=[],
+                metric_cols=[],
                 df_object_source=params['planner_obj'])
 
             params['planner_obj'] = planner
@@ -788,13 +886,26 @@ def display_optimization_plan(params):
                         for objective in all_objectives:
                             # params['state'].df['Optimal Investment'] = params['state'].df.Medias.apply(
                             #     lambda j: x[j].value())
-                            params['state'].df['Expected {}'.format(objective)] = round(
-                                params['state'].df['Optimal Investment'] / params['state'].df[params['target'][objective]],
-                                0)
 
-                            total_objective = params['state'].df['Expected {}'.format(objective)].sum()
-                            params['state'].df['Share of {}'.format(objective)] = params['state'].df['Expected {}'.format(
-                                objective)] / total_objective
+                            if objective == 'Impressions':
+                                params['state'].df['Expected {}'.format(objective)] = round(
+                                    params['state'].df['Optimal Investment'] / params['state'].df[params['target'][objective]] * 1000,
+                                    0)
+
+                                total_objective = params['state'].df['Expected {}'.format(objective)].sum()
+                                params['state'].df['Share of {}'.format(objective)] = params['state'].df['Expected {}'.format(
+                                    objective)] / total_objective
+
+                            else:
+                                params['state'].df['Expected {}'.format(objective)] = round(
+                                    params['state'].df['Optimal Investment'] / params['state'].df[
+                                        params['target'][objective]],
+                                    0)
+
+                                total_objective = params['state'].df['Expected {}'.format(objective)].sum()
+                                params['state'].df['Share of {}'.format(objective)] = params['state'].df[
+                                                                                          'Expected {}'.format(
+                                                                                              objective)] / total_objective
 
                         cols = ['Medias', 'Optimal Investment', 'Share of Investment']
                         for objective in all_objectives:
@@ -818,6 +929,7 @@ def display_optimization_plan(params):
                                 cols=cols,
                                 currency_cols=['Optimal Investment'],
                                 percent_cols=percent_cols,
+                                metric_cols=['Expected Clicks', 'Expected Impressions', 'Expected Views'],
                                 df_object_source=st)
 
                             csv = params['state'].df[cols].to_csv(index=False)
